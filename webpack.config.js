@@ -15,7 +15,11 @@ const config = {
           options: {
             presets: ['babel-preset-env']
           }
-        }
+        },
+      },
+      {
+        test: /.scss$/,
+        loader: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   }
