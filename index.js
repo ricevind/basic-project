@@ -1,1 +1,5 @@
-document.write("hello, webpack");
+const dummy = () => {
+  document.write("hello, webpack");
+}
+
+dummy();
