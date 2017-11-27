@@ -1,7 +1,9 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 
 const config = {
   entry: './src/index.js',
@@ -11,6 +13,12 @@ const config = {
   },
   module: {
     rules: [
+      {
+        test: /\.html$/,
+        use: {
+          loader: 'html-loader'
+        }
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -31,7 +39,12 @@ const config = {
     ]
   },
   plugins: [
-    new ExtractTextWebpackPlugin('styles.css')
+    new ExtractTextWebpackPlugin('styles.css'),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './index.html'),
+      alwaysWriteToDisk: true
+    }),
+    new HtmlWebpackHarddiskPlugin()
   ],
   devServer: {
     contentBase: path.resolve(__dirname, './dist'),
