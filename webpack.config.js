@@ -4,6 +4,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const OptimizeCssAssets = require('optimize-css-assets-webpack-plugin');
 
 const config = {
   entry: './src/index.js',
@@ -44,7 +46,7 @@ const config = {
       template: path.resolve(__dirname, './index.html'),
       alwaysWriteToDisk: true
     }),
-    new HtmlWebpackHarddiskPlugin()
+    new HtmlWebpackHarddiskPlugin(),
   ],
   devServer: {
     contentBase: path.resolve(__dirname, './dist'),
@@ -55,4 +57,12 @@ const config = {
   devtool: 'eval-source-map'
 }
 
+if (process.env === 'production') { 
+  config.plugins.push(
+    new UglifyJsPlugin(),
+    new OptimizeCssAssets()
+  )
+}
+
 module.exports = config;
+
