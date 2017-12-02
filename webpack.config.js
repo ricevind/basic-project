@@ -10,15 +10,25 @@ const OptimizeCssAssets = require('optimize-css-assets-webpack-plugin');
 const config = {
   entry: './src/index.js',
   output: {
-   path: path.resolve(__dirname, './dist'),
-   filename: 'output.js'
+    path: path.resolve(__dirname, './dist'),
+    filename: 'output.js'
+  },
+  resolve: {
+    extensions: ['.js', '.json', '.scss', '.jpeg', '.jpg', '.gif', '.png', '.ico'],
+    alias: {
+      images: path.resolve(__dirname, 'src/assets/images'),
+      icons: path.resolve(__dirname, 'src/assets/icons')
+    }
   },
   module: {
     rules: [
       {
         test: /\.html$/,
         use: {
-          loader: 'html-loader'
+          loader: 'html-loader',
+          options: {
+            attrs: ['img:src', 'link:href']
+          }
         }
       },
       {
@@ -36,7 +46,49 @@ const config = {
         use: ExtractTextWebpackPlugin.extract({
           use: ['css-loader', 'sass-loader'],
           fallback: 'style-loader'
-        }) 
+        })
+      },
+      {
+        test: /.ico$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            context: 'src/assets/icons',
+            outputPath: 'icons/'
+          }
+        }
+      },
+      {
+        test: /.(jpe?g|png|gif|svg)$/i,
+        loaders: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              context: 'src/assets/images',
+              outputPath: 'images/'
+            }
+          },
+          {
+            loader: 'image-webpack-loader',
+            query: {
+              mozjpeg: {
+                progressive: true
+              },
+              gifsicle: {
+                interlaced: false
+              },
+              optipng: {
+                optimizationLevel: 4
+              },
+              pngquant: {
+                quality: '75-90',
+                speed: 3
+              }
+            }
+          }
+        ]
       }
     ]
   },
@@ -57,7 +109,7 @@ const config = {
   devtool: 'eval-source-map'
 }
 
-if (process.env === 'production') { 
+if (process.env === 'production') {
   config.plugins.push(
     new UglifyJsPlugin(),
     new OptimizeCssAssets()
